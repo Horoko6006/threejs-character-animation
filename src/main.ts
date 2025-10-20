@@ -4,7 +4,7 @@ import "./style.css";
 const app = new CharacterControllerDemo();
 
 (async () => {
-  await app.loadModelAsync("./public/models/toon.glb");
+  await app.loadModelAsync("./models/toon.glb");
 
   animate();
 })();
