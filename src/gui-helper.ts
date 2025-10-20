@@ -19,6 +19,13 @@ export class GuiHelper {
     this.setupContainer();
     this.buildGUI();
     this.updateStateInfo();
+
+    // Start hidden
+    this.guiContainer.style.display = "none";
+
+    // Create toggle button (always visible)
+    const toggleButton = this.createToggleButton();
+    document.body.appendChild(toggleButton);
   }
 
   /** Returns the GUI DOM element to attach to the page */
@@ -65,16 +72,26 @@ export class GuiHelper {
     );
 
     // // === Camera ===
-    this.guiContainer.appendChild(this.createSection('Camera'));
-    this.guiContainer.appendChild(this.createVector3Slider('Offset', this.gameContext.camera.offset, -20, 20, 0.5));
+    this.guiContainer.appendChild(this.createSection("Camera"));
+    this.guiContainer.appendChild(
+      this.createVector3Slider(
+        "Offset",
+        this.gameContext.camera.offset,
+        -20,
+        20,
+        0.5
+      )
+    );
 
     // // === Visual ===
 
     // // === Actions ===
-    this.guiContainer.appendChild(this.createSection('Actions'));
-    this.guiContainer.appendChild(this.createButton('Reset Position', () => {
-      this.gameContext.character.position.set(0, 0, 0);
-    }));
+    this.guiContainer.appendChild(this.createSection("Actions"));
+    this.guiContainer.appendChild(
+      this.createButton("Reset Position", () => {
+        this.gameContext.character.position.set(0, 0, 0);
+      })
+    );
   }
 
   // -----------------------------
@@ -286,6 +303,93 @@ export class GuiHelper {
       color: "#4fc3f7",
     });
     return title;
+  }
+
+  //   private createToggleButton(): HTMLButtonElement {
+  //     const button = document.createElement("button");
+  //     button.textContent = "⚙️";
+  //     Object.assign(button.style, {
+  //       position: "absolute",
+  //       top: "10px",
+  //       right: "10px",
+  //       background: "rgba(79, 195, 247, 0.9)",
+  //       color: "black",
+  //       border: "none",
+  //       borderRadius: "50%",
+  //       width: "36px",
+  //       height: "36px",
+  //       fontSize: "18px",
+  //       cursor: "pointer",
+  //       fontWeight: "bold",
+  //       transition: "all 0.2s ease",
+  //       zIndex: "10000",
+  //     });
+
+  //     button.addEventListener(
+  //       "mouseenter",
+  //       () => (button.style.background = "#6dd5ff")
+  //     );
+  //     button.addEventListener(
+  //       "mouseleave",
+  //       () => (button.style.background = "rgba(79, 195, 247, 0.9)")
+  //     );
+
+  //     button.addEventListener("click", () => this.toggleVisibility());
+
+  //     return button;
+  //   }
+
+  private createToggleButton(): HTMLButtonElement {
+    const button = document.createElement("button");
+    button.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M12 6v6l4 2M12 4a8 8 0 100 16 8 8 0 000-16z" />
+    </svg>
+  `; // nice minimal gear icon (you can replace path if you want a chevron or menu)
+
+    Object.assign(button.style, {
+      position: "fixed",
+      bottom: "20px",
+      right: "20px",
+      background: "linear-gradient(145deg, #222, #333)",
+      border: "1px solid #555",
+      borderRadius: "50%",
+      width: "48px",
+      height: "48px",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.4)",
+      transition: "all 0.25s ease",
+      color: "#4fc3f7",
+      zIndex: "10000",
+    });
+
+    button.querySelector("svg")!.style.width = "24px";
+    button.querySelector("svg")!.style.height = "24px";
+
+    button.addEventListener("mouseenter", () => {
+      button.style.background = "linear-gradient(145deg, #2b2b2b, #3a3a3a)";
+      button.style.color = "#81d4fa";
+      button.style.transform = "scale(1.05)";
+    });
+
+    button.addEventListener("mouseleave", () => {
+      button.style.background = "linear-gradient(145deg, #222, #333)";
+      button.style.color = "#4fc3f7";
+      button.style.transform = "scale(1)";
+    });
+
+    button.addEventListener("click", () => this.toggleVisibility());
+
+    return button;
+  }
+
+  private toggleVisibility(): void {
+    const isHidden = this.guiContainer.style.display === "none";
+    this.guiContainer.style.display = isHidden ? "block" : "none";
   }
 
   public updateStateInfo(): void {
