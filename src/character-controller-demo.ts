@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CharacterController } from "./character-controller";
 import { ThreeMFLoader } from "three/examples/jsm/Addons.js";
+import { ZoneController } from "./zone-controller";
+import { BackgroundController } from "./background-controller";
 
 export class CharacterControllerDemo {
   private renderer: THREE.WebGLRenderer;
@@ -9,14 +11,16 @@ export class CharacterControllerDemo {
   private scene: THREE.Scene;
   private clock: THREE.Clock;
   private characterController: CharacterController;
+  private zone: ZoneController;
+  private backgroundController: BackgroundController;
  
   constructor() {
     this.clock = new THREE.Clock();
 
     // Setup scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x87ceeb);
-    this.scene.fog = new THREE.Fog(0x87ceeb, 0, 100);
+    // this.scene.background = new THREE.Color(0x87ceeb);
+    // this.scene.fog = new THREE.Fog(0x87ceeb, 0, 100);
 
     // Setup renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -47,6 +51,8 @@ export class CharacterControllerDemo {
 
     // Create character controller (this integrates our FSM!)
     this.characterController = new CharacterController(this.scene, this.camera);
+    this.zone = new ZoneController(this.scene, this.camera);
+    this.backgroundController = new BackgroundController(this.scene);
     
     window.addEventListener('resize', () => this.onWindowResize());
   }
@@ -75,10 +81,10 @@ export class CharacterControllerDemo {
       color: 0x4a7c59,
       roughness: 0.8 
     });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    this.scene.add(ground);
+    // const ground = new THREE.Mesh(groundGeo, groundMat);
+    // ground.rotation.x = -Math.PI / 2;
+    // ground.receiveShadow = true;
+    // this.scene.add(ground);
 
     const grid = new THREE.GridHelper(100, 50, 0x000000, 0x000000);
     grid.material.opacity = 0.1;
@@ -92,8 +98,16 @@ export class CharacterControllerDemo {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  loadModelAsync(url: string): Promise<THREE.Object3D>{
+  loadToonModelAsync(url: string): Promise<THREE.Object3D>{
     return this.characterController.loadAsync(url);
+  }
+
+  loadZoneModelAsync(url: string): Promise<THREE.Object3D> {
+    return this.zone.loadAsync(url);
+  }
+
+  loadCubeBoxAsync(urls: string[]): Promise<void> {
+    return this.backgroundController.loadAsync(urls);
   }
 
   render(){

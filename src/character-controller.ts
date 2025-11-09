@@ -42,8 +42,7 @@ export class CharacterController {
   public async loadAsync(url:string): Promise<THREE.Object3D> {
     const gltf: GLTF = await this.loader.loadAsync(url);
     const gltfScene = gltf.scene;
-    gltfScene.position.set(0,0,0);
-    gltfScene.scale.setScalar(1);
+    gltfScene.position.set(0,1,1);
     gltfScene.traverse((callback: THREE.Object3D<THREE.Object3DEventMap>) => {
         callback.castShadow = true;
     });
